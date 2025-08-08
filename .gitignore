@@ -1,1 +1,8 @@
-node_modules
+# frontend ignore list
+node_modules/
+
+#backend ignore list
+db/bin/
+db/lib/
+db/lib64
+db/pyvenv.cfg
