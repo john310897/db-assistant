@@ -6,3 +6,4 @@ db/bin/
 db/lib/
 db/lib64
 db/pyvenv.cfg
+db/share
