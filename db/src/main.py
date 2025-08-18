@@ -11,7 +11,10 @@ import faiss
 import numpy as np
 
 app=Flask(__name__)
-CORS(app,supports_credentials=True)
+# https://improved-giggle-9xq9j6rq4pj3gwr-3000.app.github.dev
+CORS(app,
+     supports_credentials=True,
+     origins='https://improved-giggle-9xq9j6rq4pj3gwr-3000.app.github.dev')
 
 
 # GPT integration
@@ -47,7 +50,7 @@ def refer_db(query):
 def search():
     data=request.get_json()
     query=data['query']
-    if('botique' in query):
+    if('botique datasource' in query):
         return refer_db(query)
     return getGPTResponse(query)
 
@@ -59,7 +62,11 @@ def getGPTResponse(user_message):
         ],  
         model=model
     )
-    output=response.choices[0].message.content
+    output={
+            "message":response.choices[0].message.content,
+            "isClient":False,
+            "isLoading":False
+            }
     return output
 
 app.run(host='0.0.0.0')

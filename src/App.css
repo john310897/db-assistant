@@ -1,3 +1,7 @@
+body {
+  background-color: #030303;
+}
+
 .chat_container {
   margin: auto;
   margin-top: 5%;
@@ -6,11 +10,11 @@
   border: 1px solid black;
   display: flex;
   flex-direction: column;
-  border-radius: 5px;
 }
 
 .message_context {
   height: 15vh;
+  background-color: #393E46;
   border-top: 1px solid black;
 }
 
@@ -20,6 +24,9 @@
   padding: 1%;
   scrollbar-width: thin;
   align-content: flex-end;
+  background-color: #393E46;
+  border-radius: 15px 10px 0 0;
+
 }
 
 .message_inputs {
@@ -43,6 +50,7 @@
 .message_body {
   width: fit-content;
   max-width: 70%;
+  overflow-wrap: break-word;
   padding: 2%;
   border-radius: 15px;
 }
