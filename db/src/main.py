@@ -11,10 +11,12 @@ import faiss
 import numpy as np
 
 app=Flask(__name__)
-# https://improved-giggle-9xq9j6rq4pj3gwr-3000.app.github.dev
 CORS(app,
      supports_credentials=True,
-     origins='https://improved-giggle-9xq9j6rq4pj3gwr-3000.app.github.dev')
+     methods=['GET', 'POST','OPTIONS'],
+     allow_headers=['Content-Type', 'Authorization'],
+     max_age=3600,
+     origins=['https://improved-giggle-9xq9j6rq4pj3gwr-3000.app.github.dev'])
 
 
 # GPT integration
@@ -29,7 +31,7 @@ client = ChatCompletionsClient(
 
 @app.route('/')
 def backend_check():
-    return "Backend works fine!"
+    return {"message":'Backend works!'}
 
 def refer_db(query):
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
@@ -46,7 +48,7 @@ def refer_db(query):
     user_message_context=f"Data:\n {context}\n\n Question:{query}"
     return getGPTResponse(user_message_context)
 
-@app.route('/query',methods=['POST'])
+@app.route('/query',methods=['POST','OPTIONS'])
 def search():
     data=request.get_json()
     query=data['query']
