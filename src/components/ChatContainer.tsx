@@ -1,5 +1,9 @@
 import { Box, Button, LinearProgress, TextField } from "@mui/material"
-import React, { useRef, useState } from "react"
+import ReactMarkdown from 'react-markdown';
+
+import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw'
+
 
 type InputQuery = {
     message: string,
@@ -28,7 +32,12 @@ const ChatContainer = ({ messageContainerRef, messageList, inputQuery, handleCha
                     <div className={(messageObj?.isClient === true ? 'message_align_right' : 'message_align_left') + ' message'} key={index}>
                         {messageObj?.isLoading === false &&
                             <div className={'message_body ' + (messageObj?.isClient === true ? 'message_body_right' : 'message_body_left')}>
-                                {messageObj?.message}
+                                <ReactMarkdown
+                                    remarkPlugins={[remarkGfm]}
+                                    rehypePlugins={[rehypeRaw]}
+                                >
+                                    {messageObj?.message}
+                                </ReactMarkdown>
                             </div>
                         }
                         {messageObj?.isLoading === true &&

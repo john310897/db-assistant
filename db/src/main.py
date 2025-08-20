@@ -13,11 +13,12 @@ import numpy as np
 app=Flask(__name__)
 CORS(app,
      supports_credentials=True,
-     methods=['GET', 'POST','OPTIONS'],
-     allow_headers=['Content-Type', 'Authorization'],
-     max_age=3600,
+    allow_headers=["Content-Type", "Authorization"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    expose_headers=["Content-Type", "Authorization"],
+    max_age=3600,
+    resources={r"/*": {"origins": "*"}},
      origins=['https://improved-giggle-9xq9j6rq4pj3gwr-3000.app.github.dev'])
-
 
 # GPT integration
 endpoint = "https://models.github.ai/inference"
@@ -28,19 +29,20 @@ client = ChatCompletionsClient(
     endpoint=endpoint,
     credential=AzureKeyCredential(token),
 )
-
-@app.route('/')
-def backend_check():
-    return {"message":'Backend works!'}
+def auth(func):
+    def wrapper(*args,**kwargs):
+        print("authenticating****************************")
+        return func(*args,**kwargs)
+    return wrapper
 
 def refer_db(query):
     embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
-    index = faiss.read_index("faiss/index.faiss")
+    index = faiss.read_index("src/faiss/index.faiss")
     query_embedding = embedding_model.encode([query])
     D, I = index.search(np.array(query_embedding), k=3)
 
     # Load texts
-    with open("faiss/texts.txt") as f:
+    with open("src/faiss/texts.txt") as f:
         texts = f.readlines()
 
     # Get top matches
@@ -48,10 +50,19 @@ def refer_db(query):
     user_message_context=f"Data:\n {context}\n\n Question:{query}"
     return getGPTResponse(user_message_context)
 
-@app.route('/query',methods=['POST','OPTIONS'])
-def search():
-    data=request.get_json()
-    query=data['query']
+@app.route('/')
+def backend_check():
+    return {"message":'Backend works!'}
+
+@app.route('/testPost',methods=['POST','OPTIONS','GET'])
+@auth
+def testPost():
+    return {"message":"post works fine"}
+
+@app.route('/query/<queryString>',methods=['POST','OPTIONS','GET'])
+def search(queryString):
+    # data=request.get_json()
+    query=queryString #or data['query']
     if('botique datasource' in query):
         return refer_db(query)
     return getGPTResponse(query)
@@ -71,4 +82,4 @@ def getGPTResponse(user_message):
             }
     return output
 
-app.run(host='0.0.0.0')
+app.run(host='0.0.0.0',port=5001, debug=True)

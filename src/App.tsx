@@ -1,9 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import Box from '@mui/material/Box';
-import TextField from '@mui/material/TextField';
-import { Button, LinearProgress } from '@mui/material';
 import ChatContainer from './components/ChatContainer';
+import axios from 'axios';
 
 function App() {
 	type UserInput = {
@@ -20,7 +18,7 @@ function App() {
 	const [messageList, setMessageList] = useState(intialMessageObj)
 	const [inputQuery, setInputQuery] = useState(intialInput)
 	const messageContainerRef = useRef(null)
-	const backendBaseURL = 'https://improved-giggle-9xq9j6rq4pj3gwr-5000.app.github.dev'
+	const backendBaseURL = 'https://improved-giggle-9xq9j6rq4pj3gwr-5001.app.github.dev'
 
 	useEffect(() => {
 		scrollIntoView();
@@ -31,6 +29,7 @@ function App() {
 		fetch(backendBaseURL, { credentials: 'include' }).then(resp => resp?.json()).then(data => {
 			console.debug(data)
 		})
+		// axios.post(backendBaseURL + '/testPost', {}, { withXSRFToken: true, withCredentials: true })
 	}
 	const scrollIntoView = () => {
 		const container: any = messageContainerRef.current
@@ -39,16 +38,12 @@ function App() {
 	}
 
 	const askAI = async (query: string) => {
-		const headers = new Headers()
-		headers.set('r	Content-Type', 'application/json')
-
-		const response = await fetch(backendBaseURL + '/query', {
-			method: 'POST',
-			credentials: 'include',
-			headers: headers,
-			body: JSON.stringify({ query: query })
-		}).then(resp => resp?.json()).then(data => data)
-
+		// const response = await axios.post(backendBaseURL + '/query', { query: query }, {
+		// 	withCredentials: true,
+		// }).then(resp => resp?.data)
+		const response = await axios.get(backendBaseURL + '/query/' + query, {
+			withCredentials: true,
+		}).then(resp => resp?.data)
 		const tempList = messageList;
 		const loadingIndex = tempList.findIndex(o => o?.isLoading === true);
 		tempList[loadingIndex] = response
