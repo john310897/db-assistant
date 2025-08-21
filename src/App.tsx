@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './App.css';
-import ChatContainer from './components/ChatContainer';
 import axios from 'axios';
+import ChatComponent from './components/ChatComponent';
+import TableComponent from './components/TableComponent';
 
 function App() {
 	type UserInput = {
@@ -17,13 +18,23 @@ function App() {
 	const intialInput: UserInput = { isClient: true, message: '', isLoading: false }
 	const [messageList, setMessageList] = useState(intialMessageObj)
 	const [inputQuery, setInputQuery] = useState(intialInput)
+	const [dataList, setDataList] = useState([])
 	const messageContainerRef = useRef(null)
 	const backendBaseURL = 'https://improved-giggle-9xq9j6rq4pj3gwr-5001.app.github.dev'
 
 	useEffect(() => {
 		scrollIntoView();
-		checkDbConnection()
 	}, [messageList])
+
+	useEffect(() => {
+		getDataSource()
+	}, [])
+
+	const getDataSource = () => {
+		axios.get(backendBaseURL + '/get_datasource', { withCredentials: true }).then(resp => {
+			setDataList(resp?.data)
+		})
+	}
 
 	const checkDbConnection = () => {
 		fetch(backendBaseURL, { credentials: 'include' }).then(resp => resp?.json()).then(data => {
@@ -68,7 +79,10 @@ function App() {
 
 	return (
 		<div className="App">
-			<ChatContainer
+			<TableComponent
+				dataList={dataList}
+			/>
+			<ChatComponent
 				handleChange={handleChange}
 				handleSend={handleSend}
 				messageList={messageList}

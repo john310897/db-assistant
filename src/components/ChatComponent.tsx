@@ -11,7 +11,7 @@ type InputQuery = {
     isClient: boolean
 }
 
-type ChatContainerProps = {
+type ChatComponentProps = {
     messageContainerRef: React.RefObject<null>,
     messageList: InputQuery[],
     setMessageList: React.Dispatch<React.SetStateAction<{
@@ -24,7 +24,7 @@ type ChatContainerProps = {
     handleSend: () => void
 }
 
-const ChatContainer = ({ messageContainerRef, messageList, inputQuery, handleChange, handleSend }: ChatContainerProps) => {
+const ChatComponent = ({ messageContainerRef, messageList, inputQuery, handleChange, handleSend }: ChatComponentProps) => {
     return <>
         <div className='chat_container'>
             <div className='message_container' ref={messageContainerRef} id="messageContainerRef">
@@ -76,4 +76,4 @@ const ChatContainer = ({ messageContainerRef, messageList, inputQuery, handleCha
         </div>
     </>
 }
-export default ChatContainer
+export default ChatComponent

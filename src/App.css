@@ -2,14 +2,30 @@ body {
   background-color: #030303;
 }
 
+.App {
+  display: flex;
+}
+
 .chat_container {
   margin: auto;
   margin-top: 5%;
+  flex: 4;
   height: 80vh;
-  width: 80%;
+  /* width: 80%; */
   border: 1px solid black;
   display: flex;
   flex-direction: column;
+}
+
+.table_component {
+  margin: auto;
+  margin-top: 5%;
+  color: antiquewhite;
+  flex: 8;
+  height: 80vh;
+  overflow: auto;
+  scrollbar-width: thin;
+  scroll-behavior: smooth;
 }
 
 .message_context {

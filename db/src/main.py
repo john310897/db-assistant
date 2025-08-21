@@ -4,11 +4,12 @@ from azure.ai.inference import ChatCompletionsClient
 from azure.ai.inference.models import SystemMessage, UserMessage
 from azure.core.credentials import AzureKeyCredential
 import pandas as pd
-from flask import Flask,request
+from flask import Flask,request,jsonify
 from flask_cors import CORS
 from sentence_transformers import SentenceTransformer
 import faiss
 import numpy as np
+import json
 
 app=Flask(__name__)
 CORS(app,
@@ -54,6 +55,14 @@ def refer_db(query):
 def backend_check():
     return {"message":'Backend works!'}
 
+@app.route('/get_datasource')
+def get_datasource():
+    df=pd.read_csv('src/datasource/fashion_boutique_dataset.csv')
+    df = df.astype(object)
+    df = df.where(pd.notnull(df), None)
+    result=df.to_dict(orient='records')
+    return jsonify(result)
+
 @app.route('/testPost',methods=['POST','OPTIONS','GET'])
 @auth
 def testPost():
@@ -63,7 +72,7 @@ def testPost():
 def search(queryString):
     # data=request.get_json()
     query=queryString #or data['query']
-    if('botique datasource' in query):
+    if('-botique' in query):
         return refer_db(query)
     return getGPTResponse(query)
 
